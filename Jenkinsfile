@@ -9,19 +9,20 @@ node {
             "JAVA_HOME=${tool 'jdk17'}",
             "PATH+MAVEN=${tool 'maven3'}/bin"
         ]) {
-            sh 'cd backend'
-            sh 'mvn clean package -DskipTests'
+            dir('backend') {
+                sh 'mvn clean package -DskipTests'
+            }
         }
     }
 
     stage('Docker Build') {
-        sh '''
-          docker build -t backend:latest .
-        '''
+        dir('backend') {
+            sh 'docker build -t backend:latest .'
+        }
     }
 
     stage('Archive Artifact') {
-        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
     }
 
     echo '✅ Build + Docker image completed'
