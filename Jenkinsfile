@@ -9,6 +9,7 @@ node {
             "JAVA_HOME=${tool 'jdk17'}",
             "PATH+MAVEN=${tool 'maven3'}/bin"
         ]) {
+            sh 'cd backend'
             sh 'mvn clean package -DskipTests'
         }
     }
