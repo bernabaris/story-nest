@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rating {
-
-    private Double averageRating;
-    private Integer totalReviews;
+public class Genre {
+    private Long id;
+    private String name;
 }

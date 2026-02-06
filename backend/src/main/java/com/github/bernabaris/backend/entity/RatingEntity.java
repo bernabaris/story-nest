@@ -2,6 +2,7 @@ package com.github.bernabaris.backend.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -17,31 +18,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RatingEntity {
+
     @Id
     @Column(name = "movie_id")
     private Long movieId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "movie_id")
     private MovieEntity movie;
 
-    @Column(name = "likes")
-    private Integer likes;
+    @Column(name = "average_rating", nullable = false)
+    private Double averageRating = 0.0;
 
-    @Column(name = "dislikes")
-    private Integer dislikes;
-
-    @Column(name = "value_")
-    private Double value;
-
-    @Override
-    public String toString() {
-        return "RatingEntity{" +
-                "movieId=" + movieId +
-                ", likes=" + likes +
-                ", dislikes=" + dislikes +
-                ", value=" + value +
-                '}';
-    }
+    @Column(name = "total_reviews", nullable = false)
+    private Integer totalReviews = 0;
 }
+

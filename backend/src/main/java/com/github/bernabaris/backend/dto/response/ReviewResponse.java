@@ -1,18 +1,17 @@
-package com.github.bernabaris.backend.model;
+package com.github.bernabaris.backend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Review {
+public class ReviewResponse {
     private Long id;
-    private Movie movie;
-    private User user;
+    private Long movieId;
+    private Long userId;
+    private String userFullName;
     private Double rating;
     private String comment;
     private LocalDateTime createdAt;

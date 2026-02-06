@@ -7,37 +7,44 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Data
 @Entity
 @Table(name = "review")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReviewEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "movie_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "movie_id")
     private MovieEntity movie;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @Column(name = "liked")
-    private boolean liked;
-
-    @Column(name = "comment")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
-    @Column(name = "rating")
+    @Column(nullable = false)
     private Double rating;
 
-    @Column(name = "created")
-    private Date created;
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

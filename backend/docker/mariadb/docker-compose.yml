@@ -1,0 +1,18 @@
+services:
+  mariadb:
+    image: mariadb:11.5.2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      #MYSQL_USER: <your_master_user_here>
+      #MYSQL_PASSWORD: <your_user_password_here>
+      #MYSQL_DATABASE: <your_database_schema_here>
+    ports:
+      - "3306:3306"
+    volumes:
+      - /Users/bernabaris/IdeaProjects/github/story-nest/backend/mariadb_data:/var/lib/mysql
+    networks:
+      - backend-net
+
+networks:
+  backend-net:
+    external: true

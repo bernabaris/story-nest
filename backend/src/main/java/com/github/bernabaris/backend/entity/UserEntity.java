@@ -1,5 +1,6 @@
 package com.github.bernabaris.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,62 +9,63 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-@Data
-@Table(name = "user_")
 @Entity
+@Table(name = "user_")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@ToString(exclude = {"password", "createdMovies", "reviews"})
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "firstName")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email")
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "admin")
-    private boolean admin;
+    @Column(name = "is_admin")
+    private boolean isAdmin = false;
 
-    @Column(name = "active")
-    private boolean active;
+    @Column(name = "is_active")
+    private boolean isActive = true;
 
-    @Column(name = "created")
-    private Date created;
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<MovieEntity> createdMovies;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ReviewEntity> reviews;
 
-    @Override
-    public String toString() { // to not print password
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", admin=" + admin +
-                ", active=" + active +
-                ", createdTimestamp=" + created +
-                '}';
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 }
+
