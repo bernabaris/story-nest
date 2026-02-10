@@ -11,9 +11,5 @@ node {
         }
     }
 
-    stage('Archive Artifact') {
-        archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
-    }
-
-    echo '✅ Build + Docker image completed'
+    echo 'Build + Docker image completed'
 }
