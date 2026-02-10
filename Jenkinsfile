@@ -5,17 +5,6 @@ node {
     }
 
     stage('Build') {
-        withEnv([
-            "JAVA_HOME=${tool 'jdk17'}",
-            "PATH+MAVEN=${tool 'maven3'}/bin"
-        ]) {
-            dir('backend') {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-    }
-
-    stage('Docker Build') {
         dir('backend') {
             sh 'docker build -t backend:latest .'
         }
