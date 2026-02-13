@@ -1,6 +1,6 @@
 node {
 
-    def DOCKER_REGISTRY = "192.168.1.51:8085"
+    def DOCKER_REGISTRY = "192.168.1.51:9443"
     def IMAGE_NAME = "backend"
     def IMAGE_TAG = "latest"
     def FULL_IMAGE_NAME = "${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
