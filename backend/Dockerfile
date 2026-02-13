@@ -1,13 +1,37 @@
-FROM maven:3.8.5-openjdk-17 AS build
+# BUILD STAGE
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+
 WORKDIR /app
-COPY . .
-RUN mvn clean install -DskipTests
 
-FROM openjdk:17.0.2-slim
+# Copy Maven settings (contains Nexus credentials)
+COPY settings.xml /root/.m2/settings.xml
+
+# Copy only pom.xml first (better Docker layer caching)
+COPY pom.xml .
+
+# Download dependencies in advance (cache optimization)
+RUN mvn dependency:go-offline
+
+# Copy source code
+COPY src ./src
+
+# Build and optionally deploy to Nexus
+RUN mvn clean deploy -DskipTests
+
+
+# ---------- RUNTIME STAGE ----------
+FROM eclipse-temurin:17-jre
+
 WORKDIR /app
-COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar backend-0.0.1-SNAPSHOT.jar
 
-CMD ["java", "-jar", "backend-0.0.1-SNAPSHOT.jar"]
+# Copy generated JAR (wildcard prevents version hardcoding)
+COPY --from=build /app/target/*.jar app.jar
 
+# Set active Spring profile
 ENV SPRING_PROFILES_ACTIVE=prod
+
+# Expose application port
 EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
