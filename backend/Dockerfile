@@ -11,7 +11,7 @@ RUN keytool -importcert \
     -file /tmp/nexus.crt \
     -alias nexus \
     -keystore $JAVA_HOME/lib/security/cacerts \
-    -storepass password \
+    -storepass changeit \
     -noprompt
 
 # Copy Maven settings (contains Nexus credentials)
