@@ -3,6 +3,17 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
+# Copy Nexus certificate
+COPY nexus.crt /tmp/nexus.crt
+
+# Import certificate into JVM truststore
+RUN keytool -importcert \
+    -file /tmp/nexus.crt \
+    -alias nexus \
+    -keystore $JAVA_HOME/lib/security/cacerts \
+    -storepass password \
+    -noprompt
+
 # Copy Maven settings (contains Nexus credentials)
 COPY settings.xml /root/.m2/settings.xml
 
