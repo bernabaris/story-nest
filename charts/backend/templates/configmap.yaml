@@ -6,7 +6,7 @@ data:
   application.yml: |
     spring:
       application:
-        name: {{ .Release.Name }}
+        name: {{ .Release.Name }}-test
 
       datasource:
         driver-class-name: org.mariadb.jdbc.Driver
