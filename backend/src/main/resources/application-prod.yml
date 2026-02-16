@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://mariadb-mariadb-1:3306/story?createDatabaseIfNotExist=true
-    username: root
-    password: root
+    url: jdbc:mariadb://mariadb:3306/story?createDatabaseIfNotExist=true
+    username: storyuser
+    password: storypass
 
   jpa:
     generate-ddl: true
