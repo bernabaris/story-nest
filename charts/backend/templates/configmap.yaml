@@ -6,13 +6,13 @@ data:
   application.yml: |
     spring:
       application:
-        name: backend
+        name: {{ .Release.Name }}
 
       datasource:
         driver-class-name: org.mariadb.jdbc.Driver
         url: jdbc:mariadb://mariadb:3306/story?createDatabaseIfNotExist=true
-        username: storyuser
-        password: storypass
+        username: {{ .Values.database.username }}
+        password: {{ .Values.database.password }}
 
       jpa:
         generate-ddl: true
@@ -23,4 +23,4 @@ data:
             dialect: org.hibernate.dialect.MariaDBDialect
 
     server:
-      port: 8080
+      port: {{ .Values.service.port }}

@@ -127,3 +127,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+database:
+  username: storyuser
+  password: storypass
