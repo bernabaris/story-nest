@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backend.fullname" . }}-config
+data:
+  application.yml: |
+    spring:
+      application:
+        name: backend
+
+      datasource:
+        driver-class-name: org.mariadb.jdbc.Driver
+        url: jdbc:mariadb://mariadb-mariadb-1:3306/story?createDatabaseIfNotExist=true
+        username: root
+        password: root
+
+      jpa:
+        generate-ddl: true
+        hibernate:
+          ddl-auto: update
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.MariaDBDialect
+
+    server:
+      port: 8080
