@@ -48,6 +48,11 @@ spec:
           env:
             - name: SPRING_CONFIG_LOCATION
               value: file:/config/
+
+          envFrom:
+            - secretRef:
+                name: {{ include "backend.fullname" . }}-secret
+
           volumeMounts:
             - name: config-volume
               mountPath: /config
