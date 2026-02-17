@@ -11,8 +11,6 @@ data:
       datasource:
         driver-class-name: org.mariadb.jdbc.Driver
         url: jdbc:mariadb://mariadb:3306/story?createDatabaseIfNotExist=true
-        username: {{ .Values.database.username }}
-        password: {{ .Values.database.password }}
 
       jpa:
         generate-ddl: true
