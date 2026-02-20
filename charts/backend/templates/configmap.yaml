@@ -22,3 +22,20 @@ data:
 
     server:
       port: {{ .Values.service.port }}
+
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,prometheus
+
+      endpoint:
+        health:
+          show-details: always
+        prometheus:
+          enabled: true
+
+      metrics:
+        export:
+          prometheus:
+            enabled: true
