@@ -1,0 +1,75 @@
+# Global configuration file for all three charts
+
+# ---------------------------------------------------------
+# 1. Backend Configuration
+# ---------------------------------------------------------
+backend:
+  service:
+    type: NodePort
+    port: 8080
+    nodePort: 30080
+  replicaCount: 1
+  image:
+    tag: latest
+
+# ---------------------------------------------------------
+# 2. MariaDB Configuration
+# ---------------------------------------------------------
+mariadb:
+  auth:
+    rootPassword: "root"
+    database: "story"
+    username: "storyuser"
+    password: "storypass"
+  architecture: standalone
+  primary:
+    persistence:
+      enabled: true
+      storageClass: nfs-client
+      size: 8Gi
+
+# ---------------------------------------------------------
+# 3. Monitoring Configuration
+# ---------------------------------------------------------
+monitoring:
+  grafana:
+    service:
+      type: NodePort
+      nodePort: 32000
+    adminPassword: "tQOTxKCkJEVONGesmVtw263SVdqxd8jTfvfFscCP"
+    persistence:
+      enabled: true
+      storageClassName: nfs-client
+      size: 5Gi
+
+  prometheus:
+    service:
+      type: NodePort
+      nodePort: 32001
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
+
+      # Custom Scrape Config for Backend
+      additionalScrapeConfigs:
+        - job_name: 'backend'
+          metrics_path: /actuator/prometheus
+          scrape_interval: 15s
+          kubernetes_sd_configs:
+            - role: endpoints
+          relabel_configs:
+            - source_labels: [__meta_kubernetes_service_name]
+              action: keep
+              regex: backend
+            - source_labels: [__meta_kubernetes_namespace]
+              action: keep
+              regex: default
+            - source_labels: [__meta_kubernetes_endpoint_port_name]
+              action: keep
+              regex: http
