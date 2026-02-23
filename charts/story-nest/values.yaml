@@ -26,6 +26,13 @@ mariadb:
 
 # 3. Kafka Configuration (Bitnami)
 kafka:
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
   controller:
     persistence:
       enabled: true
