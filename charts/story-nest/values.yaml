@@ -26,13 +26,12 @@ mariadb:
 
 # 3. Kafka Configuration (Bitnami)
 kafka:
-  replicaCount: 1
-  zookeeper:
+  controller:
+    persistence:
+      enabled: true
+      storageClass: nfs-client
+      size: 10Gi
     replicaCount: 1
-  persistence:
-    enabled: true
-    storageClass: nfs-client
-    size: 10Gi
   # Enables easy access within the cluster
   service:
     type: ClusterIP
