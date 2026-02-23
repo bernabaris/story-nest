@@ -27,7 +27,8 @@ mariadb:
 # 3. Kafka Configuration (Bitnami)
 kafka:
   image:
-    tag: 3.8.0-debian-12-r0
+    repository: bitnamilegacy/kafka
+    tag: 4.0.0-debian-12-r10
   listeners:
     client:
       protocol: PLAINTEXT
