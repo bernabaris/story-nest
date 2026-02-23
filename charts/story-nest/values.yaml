@@ -26,6 +26,22 @@ mariadb:
 
 # 3. Kafka Configuration (Bitnami)
 kafka:
+  # Added a fixed clusterId to bypass the "PASSWORDS ERROR"
+  kraft:
+    clusterId: "abcdefghijklmnopqrstuv" # Must be 22 characters base64url encoded
+
+  # Even if auth is disabled, Bitnami checks for these keys
+  sasl:
+    interbroker:
+      password: "inter_broker_password_123"
+    controller:
+      password: "controller_password_123"
+
+  auth:
+    clientProtocol: plaintext
+    interBrokerProtocol: plaintext
+    controllerProtocol: plaintext
+
   listeners:
     client:
       protocol: PLAINTEXT
@@ -33,13 +49,14 @@ kafka:
       protocol: PLAINTEXT
     interbroker:
       protocol: PLAINTEXT
+
   controller:
+    replicaCount: 1
     persistence:
       enabled: true
       storageClass: nfs-client
       size: 10Gi
-    replicaCount: 1
-  # Enables easy access within the cluster
+
   service:
     type: ClusterIP
     port: 9092
