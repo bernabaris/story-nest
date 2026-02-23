@@ -1,4 +1,4 @@
-# Main Helmfile to manage Backend, MariaDB, and Monitoring
+# Main Helmfile to manage Backend, MariaDB, Kafka, and Monitoring
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
@@ -11,27 +11,34 @@ releases:
     namespace: default
     chart: bitnami/mariadb
     version: 25.0.0
-    # Extract only the 'mariadb' section from values.yaml
     values:
       - {{ readFile "values.yaml" | fromYaml | get "mariadb" | toYaml | nindent 8 }}
 
-  # 2. Custom Backend Application
+  # 2. Kafka Messaging Cluster
+  - name: kafka
+    namespace: default
+    chart: bitnami/kafka
+    version: 30.0.0 # Latest compatible version for this setup
+    values:
+      - {{ readFile "values.yaml" | fromYaml | get "kafka" | toYaml | nindent 8 }}
+
+  # 3. Custom Backend Application
   - name: backend
     namespace: default
     chart: ./../backend
     version: 0.1.0
+    # The application now waits for both MariaDB and Kafka
     needs:
       - default/mariadb
-    # Extract only the 'backend' section from values.yaml
+      - default/kafka
     values:
       - {{ readFile "values.yaml" | fromYaml | get "backend" | toYaml | nindent 8 }}
 
-  # 3. Monitoring Stack
+  # 4. Monitoring Stack
   - name: monitoring
     namespace: default
     chart: prometheus-community/kube-prometheus-stack
     version: 82.1.0
-    # Extract only the 'monitoring' section from values.yaml
     values:
       - {{ readFile "values.yaml" | fromYaml | get "monitoring" | toYaml | nindent 8 }}
     wait: true

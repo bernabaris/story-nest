@@ -1,8 +1,6 @@
-# Global configuration file for all three charts
+# Global configuration file for all charts
 
-# ---------------------------------------------------------
 # 1. Backend Configuration
-# ---------------------------------------------------------
 backend:
   service:
     type: NodePort
@@ -12,9 +10,7 @@ backend:
   image:
     tag: latest
 
-# ---------------------------------------------------------
 # 2. MariaDB Configuration
-# ---------------------------------------------------------
 mariadb:
   auth:
     rootPassword: "root"
@@ -28,9 +24,21 @@ mariadb:
       storageClass: nfs-client
       size: 8Gi
 
-# ---------------------------------------------------------
-# 3. Monitoring Configuration
-# ---------------------------------------------------------
+# 3. Kafka Configuration (Bitnami)
+kafka:
+  replicaCount: 1
+  zookeeper:
+    replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: nfs-client
+    size: 10Gi
+  # Enables easy access within the cluster
+  service:
+    type: ClusterIP
+    port: 9092
+
+# 4. Monitoring Configuration
 monitoring:
   grafana:
     service:
@@ -41,7 +49,6 @@ monitoring:
       enabled: true
       storageClassName: nfs-client
       size: 5Gi
-
   prometheus:
     service:
       type: NodePort
@@ -55,8 +62,6 @@ monitoring:
             resources:
               requests:
                 storage: 20Gi
-
-      # Custom Scrape Config for Backend
       additionalScrapeConfigs:
         - job_name: 'backend'
           metrics_path: /actuator/prometheus
