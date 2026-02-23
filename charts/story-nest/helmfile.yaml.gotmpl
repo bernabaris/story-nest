@@ -18,7 +18,7 @@ releases:
   - name: kafka
     namespace: default
     chart: bitnami/kafka
-    version: 29.3.5 # Latest compatible version for this setup
+    version: latest # Latest compatible version for this setup
     values:
       - {{ readFile "values.yaml" | fromYaml | get "kafka" | toYaml | nindent 8 }}
 
