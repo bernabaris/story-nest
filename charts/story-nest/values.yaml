@@ -1,7 +1,9 @@
 # Global configuration file for all charts
 
-# 1. Backend Configuration
-backend:
+# ---------------------------------------------------------
+# 1. Producer Configuration
+# ---------------------------------------------------------
+producer:
   service:
     type: NodePort
     port: 8080
@@ -10,7 +12,21 @@ backend:
   image:
     tag: latest
 
-# 2. MariaDB Configuration
+# ---------------------------------------------------------
+# 2. Consumer Configuration
+# ---------------------------------------------------------
+consumer:
+  service:
+    type: NodePort
+    port: 8081 # Unique port for consumer application
+    nodePort: 30081 # Unique NodePort for external access
+  replicaCount: 1
+  image:
+    tag: latest
+
+# ---------------------------------------------------------
+# 3. MariaDB Configuration
+# ---------------------------------------------------------
 mariadb:
   auth:
     rootPassword: "root"
@@ -24,11 +40,15 @@ mariadb:
       storageClass: nfs-client
       size: 8Gi
 
-# 3. Kafka Configuration (Bitnami)
+# ---------------------------------------------------------
+# 4. Kafka Configuration (Bitnami)
+# ---------------------------------------------------------
 kafka:
+  # Using explicit image to avoid 'latest' issues
   image:
     repository: bitnamilegacy/kafka
     tag: 4.0.0-debian-12-r10
+  # Authentication disabled for local development
   listeners:
     client:
       protocol: PLAINTEXT
@@ -46,7 +66,9 @@ kafka:
     type: ClusterIP
     port: 9092
 
-# 4. Monitoring Configuration
+# ---------------------------------------------------------
+# 5. Monitoring Configuration
+# ---------------------------------------------------------
 monitoring:
   grafana:
     service:
@@ -70,8 +92,10 @@ monitoring:
             resources:
               requests:
                 storage: 20Gi
+
+      # Scrape configurations for both producer and consumer apps
       additionalScrapeConfigs:
-        - job_name: 'backend'
+        - job_name: 'producer'
           metrics_path: /actuator/prometheus
           scrape_interval: 15s
           kubernetes_sd_configs:
@@ -79,7 +103,22 @@ monitoring:
           relabel_configs:
             - source_labels: [__meta_kubernetes_service_name]
               action: keep
-              regex: backend
+              regex: producer
+            - source_labels: [__meta_kubernetes_namespace]
+              action: keep
+              regex: default
+            - source_labels: [__meta_kubernetes_endpoint_port_name]
+              action: keep
+              regex: http
+        - job_name: 'consumer'
+          metrics_path: /actuator/prometheus
+          scrape_interval: 15s
+          kubernetes_sd_configs:
+            - role: endpoints
+          relabel_configs:
+            - source_labels: [__meta_kubernetes_service_name]
+              action: keep
+              regex: consumer
             - source_labels: [__meta_kubernetes_namespace]
               action: keep
               regex: default

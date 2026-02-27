@@ -1,0 +1,15 @@
+package com.github.bernabaris.producer.mapper;
+
+import com.github.bernabaris.producer.entity.GenreEntity;
+import com.github.bernabaris.producer.model.Genre;
+
+public class GenreMapper {
+    public static Genre toModel(GenreEntity entity) {
+        if (entity == null) return null;
+
+        return new Genre(
+                entity.getId(),
+                entity.getName()
+        );
+    }
+}

@@ -1,4 +1,4 @@
-# Main Helmfile to manage Backend, MariaDB, Kafka, and Monitoring
+# Main Helmfile to manage Producer, Consumer, MariaDB, Kafka, and Monitoring
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
@@ -18,23 +18,34 @@ releases:
   - name: kafka
     namespace: default
     chart: bitnami/kafka
-    version: 30.0.0 # Latest compatible version for this setup
+    version: 30.0.0
     values:
       - {{ readFile "values.yaml" | fromYaml | get "kafka" | toYaml | nindent 8 }}
 
-  # 3. Custom Backend Application
-  - name: backend
+  # 3. Custom Producer Application
+  - name: producer
     namespace: default
-    chart: ./../backend
+    chart: ./../producer
     version: 0.1.0
-    # The application now waits for both MariaDB and Kafka
+    # The application waits for both MariaDB and Kafka
     needs:
       - default/mariadb
       - default/kafka
     values:
-      - {{ readFile "values.yaml" | fromYaml | get "backend" | toYaml | nindent 8 }}
+      - {{ readFile "values.yaml" | fromYaml | get "producer" | toYaml | nindent 8 }}
 
-  # 4. Monitoring Stack
+  # 4. Custom Consumer Application
+  - name: consumer
+    namespace: default
+    chart: ./../consumer
+    version: 0.1.0
+    # Consumer only really needs Kafka to start processing events
+    needs:
+      - default/kafka
+    values:
+      - {{ readFile "values.yaml" | fromYaml | get "consumer" | toYaml | nindent 8 }}
+
+  # 5. Monitoring Stack
   - name: monitoring
     namespace: default
     chart: prometheus-community/kube-prometheus-stack
