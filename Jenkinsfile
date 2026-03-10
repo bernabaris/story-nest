@@ -1,7 +1,7 @@
 node {
-
+    def MODULE = params.MODULE_NAME ?: 'producer'
     def DOCKER_REGISTRY = "192.168.1.51:9443"
-    def IMAGE_NAME = "producer"
+    def IMAGE_NAME = ${MODULE}
     def IMAGE_TAG = "latest"
     def FULL_IMAGE_NAME = "${DOCKER_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}"
 
@@ -11,7 +11,7 @@ node {
     }
 
     stage('Build Docker Image') {
-        dir('producer') {
+        dir('${MODULE}') {
             sh """
                 docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
             """
