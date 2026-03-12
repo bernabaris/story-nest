@@ -18,7 +18,7 @@ producer:
 consumer:
   service:
     type: NodePort
-    port: 8081 # Unique port for consumer application
+    port: 8080 # Unique port for consumer application
     nodePort: 30081 # Unique NodePort for external access
   replicaCount: 1
   image:
